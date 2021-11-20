@@ -1,0 +1,52 @@
+.fixed-btn{
+    position: fixed;
+    background: #0FACF3;
+    width: 180px;
+    height: 45px;
+    line-height: 45px;
+    bottom: 10%;
+    right: 3%;
+    border-radius: 5px;
+    text-align: center;
+
+}
+
+#mapid{
+    height: 100vh;
+    width: 100%;
+}
+
+#markermapid{
+    height: 50vh;
+    width: 100%;
+}
+
+#img-same-size{
+    float: left;
+    width:  100px;
+    height: 100px;
+    object-fit:scale-down;
+    stroke: black;
+}
+
+/* .map {
+    height: 300px;
+    z-index: 1;
+  }
+
+  .map-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+  } */
+
+  /* .map-marker-centered {
+    background-image: url("https://img.icons8.com/color/48/000000/marker--v1.png");
+    width: 50px;
+    height: 48px;
+    position: absolute;
+    z-index: 2;
+    left: calc(50% - 25px);
+    top: calc(50% - 50px);
+    transition: all 0.4s ease;
+  } */
