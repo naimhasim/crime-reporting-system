@@ -16,8 +16,10 @@ use App\Http\Controllers\ReportController;
 //Resources
 //Route::resource('report', ReportController::class);
 
-Route::get('/', [ReportController::class, 'index']);
+// Route::get('/', [ReportController::class, 'index']);
 Route::get('showall-report',[ReportController::class, 'showallreport']);
+Route::get('show-chart',[ReportController::class, 'showchart']);
+
 Route::post('/', [ReportController::class, 'store']);
 
 Route::get('/', function () {

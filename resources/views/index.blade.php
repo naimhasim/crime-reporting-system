@@ -102,6 +102,44 @@
     $(document).ready(function () {
 
         showallreport();
+        showchart();
+
+        function showchart()
+        {
+            $.ajax({
+                type: "GET",
+                url: "show-chart",
+                dataType: "json",
+                success: function (response)
+                {
+                    console.log(response.chartData);
+                    google.charts.load('current', {'packages':['corechart']});
+                    google.charts.setOnLoadCallback(drawChart);
+                    function drawChart() {
+
+                        var data = google.visualization.arrayToDataTable([
+                            ['Crime Category', 'Number of reports '],
+                            [response.chartData[0].crime_category,response.chartData[0].total],
+                            [response.chartData[1].crime_category,response.chartData[1].total],
+                            [response.chartData[2].crime_category,response.chartData[2].total],
+                            [response.chartData[3].crime_category,response.chartData[3].total],
+                            [response.chartData[4].crime_category,response.chartData[4].total],
+
+                        ]);
+
+                        var options = {
+                        title: 'Crime Category Chart'
+                        };
+
+                        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+                        chart.draw(data, options);
+                    }
+
+                ;}
+            });
+
+        }
 
         function showallreport()
         {
@@ -301,6 +339,7 @@
                         $("#addreportform").trigger("reset");
                         alert(response.message);
                         showallreport();
+                        showchart();
                     }
                 }
             });
@@ -310,5 +349,6 @@
 
 
 </script>
+
 @endsection
 {{-- Scripts End --}}
