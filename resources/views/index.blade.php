@@ -34,6 +34,7 @@
     <!--content----->
     <div class="span9" style="height:100%">
         <div id="map-wrapper" >
+            @include('layouts.sidebar')
             <div id="mapid"></div> <!--leaflet map div -->
             <div id="button-wrapper" >
                 <button type="button" class=" btn btn-dark leaflet-left leaflet-top" data-bs-toggle="modal" data-bs-target="#AddReportModal">
@@ -76,8 +77,12 @@
     };
 
     L.geoJSON(mygeojson, {style: geoStyle}).addTo(mymap)
-    L.control.locate().addTo(mymap);
-
+    //L.control.locate().addTo(mymap);
+    var ctlsidebar = L.control.sidebar('sidebar').addTo(mymap);
+    var ctleasybutton = L.easyButton('fa-exchange', function () {
+        ctlsidebar.toggle();
+        console.log("clicked");
+    }).addTo(mymap);
 
     // // Adding map markers
     // var marker = L.marker([6.1247846,102.2368729]).addTo(mymap);

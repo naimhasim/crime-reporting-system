@@ -152,11 +152,11 @@ updateLatLng(markerselect.getLatLng().lat, markerselect.getLatLng().lng);
 function updateLatLng(lat,lng,reverse) {
 if(reverse) {
 marker.setLatLng([lat,lng]);
-zzzmap.panTo([lat,lng]);
+
 } else {
 document.getElementById('latitude').value = markerselect.getLatLng().lat;
 document.getElementById('longitude').value = markerselect.getLatLng().lng;
-zzzmap.panTo([lat,lng]);
+
 }
 }
 
