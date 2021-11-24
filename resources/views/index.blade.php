@@ -1,35 +1,36 @@
 @extends('layouts.app')
 
 @section('content')
+    <style>
+        #map-wrapper {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        border: 1px solid black;
+        }
+
+        #button-wrapper {
+        position: absolute;
+        margin: auto;
+        bottom: 10%;
+        left: 0;
+        right: 0;
+        width: 100%;
+        border: 1px solid red;
+        }
+        .leaflet-left{
+            pointer-events: auto;
+        }
+
+        #reportmedia {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 
       <!-- Modal -->
     @include('report.add')
-  <style>
-     #map-wrapper {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    border: 1px solid black;
-    }
 
-    #button-wrapper {
-    position: absolute;
-    margin: auto;
-    bottom: 10%;
-    left: 0;
-    right: 0;
-    width: 100%;
-    border: 1px solid red;
-    }
-    .leaflet-left{
-        pointer-events: auto;
-    }
-
-    #reportmedia {
-        width: 100%;
-        height: 100%;
-    }
-  </style>
 
     <!--content----->
     <div class="span9" style="height:100%">
@@ -79,11 +80,39 @@
     L.geoJSON(mygeojson, {style: geoStyle}).addTo(mymap)
     //L.control.locate().addTo(mymap);
     var ctlsidebar = L.control.sidebar('sidebar').addTo(mymap);
-    var ctleasybutton = L.easyButton('fa-exchange', function () {
+    var ctleasybutton = L.easyButton('fa fa-gear', function () {
         ctlsidebar.toggle();
-        console.log("clicked");
     }).addTo(mymap);
 
+    var ctlcentermap = L.easyButton
+    (
+        {
+            states:
+            [
+                {
+                    stateName: 'zoom-to-forest',        // name the state
+                    icon:      'fa fa-arrows',               // and define its properties
+                    title:     'Zoom out to Kelantan',      // like its title
+                    onClick: function(btn, map)
+                    {       // and its callback
+                        map.setView([5.4274, 102.0407],9.45);
+                        btn.state('zoom-to-school');    // change state on click!
+                    }
+                },
+
+                // {
+                //     stateName: 'zoom-to-school',
+                //     icon:      'fa-university',
+                //     title:     'zoom to a school',
+                //     onClick: function(btn, map)
+                //     {
+                //         map.setView(mymap.getCenter(),16);
+                //         btn.state('zoom-to-forest');
+                //     }
+                // }
+            ]
+        }
+    ).addTo(mymap);
     // // Adding map markers
     // var marker = L.marker([6.1247846,102.2368729]).addTo(mymap);
 
@@ -128,7 +157,15 @@
                         ]);
 
                         var options = {
-                        title: 'Crime Category Chart'
+                        // title: 'Crime Category Chart',
+                        titleTextStyle: {
+                            color: 'black',
+                            fontName: 'Helvetica',
+                            fontSize: 'large',
+                            bold: true,
+                            italic: true },
+                        pieHole: 0.35,
+                        backgroundColor : '#f3f3f3',
                         };
 
                         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -175,7 +212,8 @@
                             (
                             "<h4 class='mb-1'>" + item.report_title + "</h4> "
                             +"<img class='mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
-                            +"<div class='rounded-pill  d-inline-block border bg-primary' style=''><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            +"<div class='rounded-pill  d-inline-block border bg-primary' style=''><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.location+"</strong></h8></div>"
                             +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
                             +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6>"+item.report_desc+"</h6></div>"
                             +"<small>For enquiries, please contact :</small><br>"
@@ -196,7 +234,8 @@
                             (
                             "<h4 class='mb-1'>" + item.report_title + "</h4> "
                             +"<img class='img-same-size mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
-                            +"<div class='rounded-pill  d-inline-block border' style='background-color:indigo;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:indigo;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.location+"</strong></h8></div>"
                             +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
                             +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6 class='p-2'>"+item.report_desc+"</h6></div>"
                             +"<small>For enquiries, please contact :</small><br>"
@@ -217,7 +256,8 @@
                             (
                             "<h4 class='mb-1'>" + item.report_title + "</h4> "
                             +"<img class='mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
-                            +"<div class='rounded-pill  d-inline-block bg-danger border'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            +"<div class='rounded-pill  d-inline-block bg-danger border'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.location+"</strong></h8></div>"
                             +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
                             +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6 class='p-2'>"+item.report_desc+"</h6></div>"
                             +"<small>For enquiries, please contact :</small><br>"
@@ -238,7 +278,8 @@
                             (
                             "<h4 class='mb-1'>" + item.report_title + "</h4> "
                             +"<img class='img-same-size mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
-                            +"<div class='rounded-pill  d-inline-block bg-success border'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            +"<div class='rounded-pill  d-inline-block bg-success border'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.location+"</strong></h8></div>"
                             +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
                             +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6 class='p-2'>"+item.report_desc+"</h6></div>"
                             +"<small>For enquiries, please contact :</small><br>"
@@ -259,7 +300,8 @@
                             (
                             "<h4 class='mb-1'>" + item.report_title + "</h4> "
                             +"<img class='img-same-size mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
-                            +"<div class='rounded-pill  d-inline-block border' style='background-color:orange;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:orange;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.location+"</strong></h8></div>"
                             +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
                             +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6 class='p-2'>"+item.report_desc+"</h6></div>"
                             +"<small>For enquiries, please contact :</small><br>"
@@ -346,9 +388,8 @@
 
         });
     });
-
-
 </script>
 
+@include('report.add_script')
 @endsection
 {{-- Scripts End --}}

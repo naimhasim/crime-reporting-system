@@ -17,6 +17,7 @@ class Report extends Model
         'crime_category',
         'latitude',
         'longitude',
+        'location',
     ];
 
     public function users()

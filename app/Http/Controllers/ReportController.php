@@ -6,6 +6,7 @@ use App\Models\Report;
 use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class ReportController extends Controller
@@ -72,6 +73,12 @@ class ReportController extends Controller
             $report->crime_category = $request->input('crime_category');
             $report->latitude = $request->input('latitude');
             $report->longitude = $request->input('longitude');
+            $lat  = $request->input('latitude');
+            $long = $request->input('longitude');
+            $extracteddata = Http::get("https://api.mapbox.com/geocoding/v5/mapbox.places/".$long.",".$lat.".json?types=place&limit=1&access_token=pk.eyJ1IjoibmFpbWhhc2ltIiwiYSI6ImNrdmFxaGYzbTJsOGgydnA2OWVhZHoxOWIifQ.HpzTWE563N64yu0JYi251w");
+            $assocArray = json_decode($extracteddata);
+            $location = $assocArray->features[0]->text;
+            $report->location = $location;
             $report->user_id = $users->id; // get last inserted id
             if($request->hasFile('report_media'))
             {
@@ -116,6 +123,18 @@ class ReportController extends Controller
             'report' => $report,
             //'users' => $users,
         ]);
+    }
+
+    public function getAllPost(){
+        $response = Http::get("https://api.mapbox.com/geocoding/v5/mapbox.places/102.29742609007513,6.05473460220567.json?types=place&limit=1&access_token=pk.eyJ1IjoibmFpbWhhc2ltIiwiYSI6ImNrdmFxaGYzbTJsOGgydnA2OWVhZHoxOWIifQ.HpzTWE563N64yu0JYi251w");
+        return $response->json();
+    }
+
+    public function getSinglePost($lat,$long){
+        $response = Http::get("https://api.mapbox.com/geocoding/v5/mapbox.places/".$long.",".$lat.".json?types=place&limit=1&access_token=pk.eyJ1IjoibmFpbWhhc2ltIiwiYSI6ImNrdmFxaGYzbTJsOGgydnA2OWVhZHoxOWIifQ.HpzTWE563N64yu0JYi251w");
+        $assocArray = json_decode($response);
+        $temp = $assocArray->features[0]->text;
+        return $temp;
     }
 
     /**
