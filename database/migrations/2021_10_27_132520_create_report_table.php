@@ -23,7 +23,7 @@ class CreateReportTable extends Migration
             $table->string('crime_category');
             $table->string('latitude');
             $table->string('longitude');
-            $table->string('location')->nullable();
+            $table->string('district')->nullable();
             $table->timestamps();
         });
 
