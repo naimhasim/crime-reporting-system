@@ -40,6 +40,7 @@
     crossorigin=""></script>
     <script src="{{asset('js/app.js')}}"></script>
     <script src="{{asset('js/leaflet.markercluster.js')}}"></script>
+    <script src="{{asset('js/leaflet.markercluster.layersupport.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.1/dist/L.Control.Locate.min.js" charset="utf-8"></script>
     <script src="{{asset('js/easy-button.js')}}"></script>
     <script src="{{asset('js/leaflet-sidebar.js')}}"></script>

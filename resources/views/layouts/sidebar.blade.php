@@ -1,11 +1,18 @@
 <div id="sidebar" style="">
     <h3><center>Dashboard</center></h3>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <div class="card" style="width:;">
-        <div id="piechart" style="width: ; height: ;"></div>
+    <div class="card mb-2" style="width:;">
+        <div id="crimecategory_chart" style="width: ; height: ;"></div>
         <div class="card-body">
             <h5 class="card-title">Crime Category</h5>
             <p class="card-text">This pie-chart shows the overall number of the crime category-based  reports received throughout the system</p>
+          </div>
+    </div>
+    <div class="card" style="width:;">
+        <div id="district_chart" style="width: ; height: ;"></div>
+        <div class="card-body">
+            <h5 class="card-title">District</h5>
+            <p class="card-text">This pie-chart shows the overall number of the district-based reports received throughout the system</p>
           </div>
     </div>
 

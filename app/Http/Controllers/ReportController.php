@@ -100,14 +100,16 @@ class ReportController extends Controller
     }
 
     public function showchart(){
-        $chart = DB::select(DB::raw("SELECT report.crime_category, count(report.report_title) as total FROM report GROUP BY report.crime_category;"));
+        $crimecategorychart = DB::select(DB::raw("SELECT report.crime_category, count(report.report_title) as total FROM report GROUP BY report.crime_category;"));
+        $districtchart = DB::select(DB::raw("SELECT count(report.report_title) AS total, report.district FROM report GROUP BY report.district;"));
         // $data = "['Crime Category', 'Number of reports'],";
         // foreach ($chart as $val) {
         //     $data.="['".$val->crime_category."', ".$val->total."],";
         // }
-        $chartData = $chart;
+
         return response()->json([
-            'chartData' => $chartData,
+            'categorychart' => $crimecategorychart,
+            'districtchart' => $districtchart,
         ]);
     }
 
