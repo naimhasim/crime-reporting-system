@@ -13,7 +13,7 @@
     }).addTo(markermap);
 
     // Adding marker
-    var markerselect = L.marker([6.1247846,102.2368729],{
+    var markerselect = L.marker([-39,146],{
     draggable: true
     }).addTo(markermap);
 

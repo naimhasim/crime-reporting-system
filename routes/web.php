@@ -24,6 +24,9 @@ Route::post('/', [ReportController::class, 'store']);
 Route::get('all-post', [ReportController::class, 'getAllPost'])->name('post.all');
 Route::get('single-post/{lat}/{long}', [ReportController::class, 'getSinglePost'])->name('post.single');
 
+Route::get('cluster',function(){
+    return view('cluster');
+});
 Route::get('/', function () {
     return view('index');
 });

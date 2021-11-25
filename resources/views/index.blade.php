@@ -358,6 +358,11 @@
 
         function showallreport()
         {
+            var group1 = new L.layerGroup(),
+                group2 = new L.layerGroup(),
+                group3 = new L.layerGroup(),
+                group4 = new L.layerGroup(),
+                group5 = new L.layerGroup();
             $.ajax({
                 type: "GET",
                 url: "showall-report",
@@ -385,7 +390,7 @@
                             var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png'}) //marker icon
 
                             var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
-                            .addTo(mymap)
+                            .addTo(group1)
                             .bindPopup
                             (
                             "<h4 class='mb-1'>" + item.report_title + "</h4> "
@@ -407,7 +412,7 @@
                             var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png'}) //marker icon
 
                             var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
-                            .addTo(mymap)
+                            .addTo(group2)
                             .bindPopup
                             (
                             "<h4 class='mb-1'>" + item.report_title + "</h4> "
@@ -429,7 +434,7 @@
                             var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'}) //marker icon
 
                             var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
-                            .addTo(mymap)
+                            .addTo(group3)
                             .bindPopup
                             (
                             "<h4 class='mb-1'>" + item.report_title + "</h4> "
@@ -451,7 +456,7 @@
                             var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png'}) //marker icon
 
                             var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
-                            .addTo(mymap)
+                            .addTo(group4)
                             .bindPopup
                             (
                             "<h4 class='mb-1'>" + item.report_title + "</h4> "
@@ -473,7 +478,7 @@
                             var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png'}) //marker icon
 
                             var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
-                            .addTo(mymap)
+                            .addTo(group5)
                             .bindPopup
                             (
                             "<h4 class='mb-1'>" + item.report_title + "</h4> "
@@ -490,12 +495,31 @@
                             .openPopup();
                             clusterpoint.addLayer(marker);
                         }
-                        mymap.addLayer(clusterpoint);
+                        clusterpoint.addTo(mymap);
 
                     })
+
+
+
                 ;}
             });
 
+
+                    var overlayMaps = {
+                        "Theft": group1,
+                        "Housebreak": group2,
+                        "Robbery": group3,
+                        "Motor Vehicle Theft": group4,
+                        "Assault": group5,
+                    }
+
+                    var control = L.control.layers(null, overlayMaps).addTo(mymap);
+
+                    group1.addTo(mymap);
+                    group2.addTo(mymap);
+                    group3.addTo(mymap);
+                    group4.addTo(mymap);
+                    group5.addTo(mymap);
         }
 
         $(document).on('click', '.add_report', function (e) {
