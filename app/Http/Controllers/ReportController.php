@@ -41,8 +41,8 @@ class ReportController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'fullname'=>'required|max:255',
-            'phoneno'=>'required',
-            //'email'=>'',
+            'phoneno'=>'required|digits:10',
+            'email' => 'email:rfc,dns',
             'report_title'=>'required|max:255',
             'report_desc'=>'required|max:255',
             'report_media'=>'image|mimes:jpeg,png,jpg|max:2048',
@@ -102,14 +102,12 @@ class ReportController extends Controller
     public function showchart(){
         $crimecategorychart = DB::select(DB::raw("SELECT report.crime_category, count(report.report_title) as total FROM report GROUP BY report.crime_category;"));
         $districtchart = DB::select(DB::raw("SELECT count(report.report_title) AS total, report.district FROM report GROUP BY report.district;"));
-        // $data = "['Crime Category', 'Number of reports'],";
-        // foreach ($chart as $val) {
-        //     $data.="['".$val->crime_category."', ".$val->total."],";
-        // }
+        $totalperdate = DB::select(DB::raw("SELECT count(report_title) as 'jumlah', created_at as 'date' FROM `report` group BY created_at ASC;"));
 
         return response()->json([
             'categorychart' => $crimecategorychart,
             'districtchart' => $districtchart,
+            'totalperdate'  => $totalperdate,
         ]);
     }
 

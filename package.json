@@ -27,6 +27,7 @@
     "dependencies": {
         "font-awesome": "^4.7.0",
         "leaflet": "^1.7.1",
+        "leaflet-geosearch": "^3.6.0",
         "leaflet-locationpicker": "^0.3.3",
         "leaflet.markercluster": "^1.5.3",
         "sidebar-v2": "^0.4.0",

@@ -25,7 +25,11 @@ Route::get('all-post', [ReportController::class, 'getAllPost'])->name('post.all'
 Route::get('single-post/{lat}/{long}', [ReportController::class, 'getSinglePost'])->name('post.single');
 
 Route::get('cluster',function(){
-    return view('cluster');
+    return view('experiment/cluster');
+});
+
+Route::get('timelines', function(){
+    return view('timeline-page');
 });
 Route::get('/', function () {
     return view('index');

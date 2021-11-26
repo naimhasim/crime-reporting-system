@@ -49,7 +49,9 @@
 
 <body>
 
-    <!--Contents-->
+
+
+    <!--Content-->
     <div>
         @yield('content')
     </div>
@@ -57,7 +59,8 @@
 
     <!--Footer-->
     <footer></footer>
-    @yield('scripts')
 
+
+    @yield('scripts')
 </body>
 </html>

@@ -1,158 +1,253 @@
 @extends('layouts.app')
-
 @section('content')
-    <style>
-        #map-wrapper {
-        width: 100%;
-        height: 100%;
-        position: relative;
-        border: 1px solid black;
-        }
-
-        #button-wrapper {
-        position: absolute;
-        margin: auto;
-        bottom: 10%;
-        left: 0;
-        right: 0;
-        width: 100%;
-        border: 1px solid red;
-        }
-        .leaflet-left{
-            pointer-events: auto;
-        }
-
-        #reportmedia {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
 
       <!-- Modal -->
-    @include('report.add')
+    @include('report.addmodal')
+
 
 
     <!--content----->
     <div class="span9" style="height:100%">
         <div id="map-wrapper" >
-            @include('layouts.sidebar')
+            @include('report.sidebar')
             <div id="mapid"></div> <!--leaflet map div -->
             <div id="button-wrapper" >
-                <button type="button" class=" btn btn-dark leaflet-left leaflet-top" data-bs-toggle="modal" data-bs-target="#AddReportModal">
-                    I want to report
+                <button type="button" class="rounded-pill btn btn-primary leaflet-bottom leaflet-left" style="pointer-events: auto; width: ; height: ;" data-bs-toggle="modal" data-bs-target="#AddReportModal">
+                    <b style="font-size: large; color: white;">Add report<b>
                   </button>
-
-                </div>
             </div>
-
+            {{-- <div id="button-wrapper2" >
+                <button type="button" class="rounded-pill btn btn-primary leaflet-bottom leaflet-left" style="pointer-events: auto; width: ; height: ;" data-bs-toggle="modal" data-bs-target="#AddReportModal">
+                    <b style="font-size: large; color: white;">Add report<b>
+                  </button>
+            </div> --}}
         </div>
     </div>
 
-    <!--content-end-->
 @endsection
+<!--content--section-end-->
 
-{{-- scripts start --}}
+{{-- scripts--section--start --}}
 @section('scripts')
 
-<script> //MAP COMPONENT
+<script>
 
-    // Creating map view
-    var mymap = L.map('mapid').setView([5.3836, 102.0712], 9.45);
-
-    // Creating map options
-
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-        attribution: '',
-        maxZoom: 18,
-        id: 'mapbox/light-v10', //mapbox/streets-v11 //mapbox/light-v10 //mapbox/dark-v10 //
-        tileSize: 512,
-        zoomOffset: -1,
-        accessToken: '{{env('MAPBOX_PUBLIC_TOKEN')}}'
-    }).addTo(mymap);
-
-    @include('layouts.kelantanborder')
-    var geoStyle = {
-    "opacity": 1,
-    // "color": "blue",
-    "fillOpacity": 0.03 // value between 0-1 or 0% - 100%
-    };
-
-    L.geoJSON(mygeojson, {style: geoStyle}).addTo(mymap)
-    //L.control.locate().addTo(mymap);
-    var ctlsidebar = L.control.sidebar('sidebar').addTo(mymap);
-    // var ctleasybutton = L.easyButton('fa fa-gear', function () {
-    //     ctlsidebar.toggle();
-    // }).addTo(mymap);
-    var ctlviewchart = L.easyButton
-    (
+function showallreport()
         {
-            states:
-            [
+            var group1 = new L.layerGroup(),
+                group2 = new L.layerGroup(),
+                group3 = new L.layerGroup(),
+                group4 = new L.layerGroup(),
+                group5 = new L.layerGroup();
+            $.ajax({
+                type: "GET",
+                url: "showall-report",
+                dataType: "json",
+                success: function (response)
                 {
-                    stateName: 'zoom-to-forest',        // name the state
-                    icon:      'fa fa-gear',               // and define its properties
-                    title:     'View Charts',      // like its title
-                    onClick: function(btn, map)
-                    {       // and its callback
-                        ctlsidebar.toggle();
-                        btn.state('zoom-to-school');    // change state on click!
-                    }
-                },
-            ]
-        }
-    ).addTo(mymap);
+                    var LeafIcon = L.Icon.extend({
+                        options: {
+                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                            //iconSize:     [38, 95],
+                            //shadowSize:   [50, 64],
+                            //iconAnchor:   [22, 94],
+                            //shadowAnchor: [4, 62],
+                            //popupAnchor:  [-3, -76]
+                        }
+                    });
 
-    var ctlcentermap = L.easyButton
-    (
-        {
-            states:
-            [
-                {
-                    stateName: 'zoom-to-forest',        // name the state
-                    icon:      'fa fa-arrows',               // and define its properties
-                    title:     'Pan out to Kelantan',      // like its title
-                    onClick: function(btn, map)
-                    {       // and its callback
-                        map.setView([5.4274, 102.0407],9.45);
-                        btn.state('zoom-to-school');    // change state on click!
-                    }
-                },
+                    console.log(response.report);
+                    var clusterpoint = L.markerClusterGroup.layerSupport();
 
-                // {
-                //     stateName: 'zoom-to-school',
-                //     icon:      'fa-university',
-                //     title:     'zoom to a school',
-                //     onClick: function(btn, map)
-                //     {
-                //         map.setView(mymap.getCenter(),16);
-                //         btn.state('zoom-to-forest');
-                //     }
-                // }
-            ]
-        }
-    ).addTo(mymap);
-    // // Adding map markers
-    // var marker = L.marker([6.1247846,102.2368729]).addTo(mymap);
+                    $.each(response.report, function (key, item) {
 
-    // // Click marker to zoom in
-    // marker.on('click',
-    //     function(){
-    //         var latlngs = [ marker.getLatLng() ];
-    //         var markerBounds = L.latLngBounds(latlngs);
-    //         mymap.fitBounds(markerBounds);
-    //     }
-    // );
+                        if (item.crime_category == "Theft" )
+                        {
+                            var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png'}) //marker icon
 
-</script>
+                            var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
+                            .addTo(group1)
+                            .bindPopup
+                            (
+                            "<h4 class='mb-1'>" + item.report_title + "</h4> "
+                            +"<img class='mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
+                            +"<div class='rounded-pill  d-inline-block border bg-primary' style=''><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.district+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
+                            +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6>"+item.report_desc+"</h6></div>"
+                            +"<small>For enquiries, please contact :</small><br>"
+                            +"<strong><h10>"+item.fullname+" ("+item.email+")</h10></strong>&nbsp;&nbsp;&nbsp;<br>"
+                            +"<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green' href='tel:+6"+item.contact_no+"'>Call</a></button>\
+                            &nbsp;<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green'  href='https://api.whatsapp.com/send?phone=6"+item.contact_no+"'>Whatsapp</a></button><br>"
+                            )
+                            .openPopup();
+                            clusterpoint.addLayer(marker);
+                        }
+                        else if (item.crime_category == "Housebreak" )
+                        {
+                            var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png'}) //marker icon
 
-<script> // ADDING/FETCH REPORT COMPONENTS
-    $(document).ready(function () {
+                            var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
+                            .addTo(group2)
+                            .bindPopup
+                            (
+                            "<h4 class='mb-1'>" + item.report_title + "</h4> "
+                            +"<img class='img-same-size mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:indigo;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.district+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
+                            +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6 class='p-2'>"+item.report_desc+"</h6></div>"
+                            +"<small>For enquiries, please contact :</small><br>"
+                            +"<strong><h10>"+item.fullname+" ("+item.email+")</h10></strong>&nbsp;&nbsp;&nbsp;<br>"
+                            +"<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green' href='tel:+6"+item.contact_no+"'>Call</a></button>\
+                            &nbsp;<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green'  href='https://api.whatsapp.com/send?phone=6"+item.contact_no+"'>Whatsapp</a></button><br>"
+                            )
+                            .openPopup();
+                            clusterpoint.addLayer(marker);
+                        }
+                        else if (item.crime_category == "Robbery" )
+                        {
+                            var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'}) //marker icon
 
-        showallreport();
-        showchart();
+                            var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
+                            .addTo(group3)
+                            .bindPopup
+                            (
+                            "<h4 class='mb-1'>" + item.report_title + "</h4> "
+                            +"<img class='mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
+                            +"<div class='rounded-pill  d-inline-block bg-danger border'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.district+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
+                            +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6 class='p-2'>"+item.report_desc+"</h6></div>"
+                            +"<small>For enquiries, please contact :</small><br>"
+                            +"<strong><h10>"+item.fullname+" ("+item.email+")</h10></strong>&nbsp;&nbsp;&nbsp;<br>"
+                            +"<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green' href='tel:+6"+item.contact_no+"'>Call</a></button>\
+                            &nbsp;<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green'  href='https://api.whatsapp.com/send?phone=6"+item.contact_no+"'>Whatsapp</a></button><br>"
+                            )
+                            .openPopup();
+                            clusterpoint.addLayer(marker);
+                        }
+                        else if (item.crime_category == "Motor vehicle theft" )
+                        {
+                            var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png'}) //marker icon
 
-        function showchart()
-        {
+                            var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
+                            .addTo(group4)
+                            .bindPopup
+                            (
+                            "<h4 class='mb-1'>" + item.report_title + "</h4> "
+                            +"<img class='img-same-size mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
+                            +"<div class='rounded-pill  d-inline-block bg-success border'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.district+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
+                            +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6 class='p-2'>"+item.report_desc+"</h6></div>"
+                            +"<small>For enquiries, please contact :</small><br>"
+                            +"<strong><h10>"+item.fullname+" ("+item.email+")</h10></strong>&nbsp;&nbsp;&nbsp;<br>"
+                            +"<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green' href='tel:+6"+item.contact_no+"'>Call</a></button>\
+                            &nbsp;<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green'  href='https://api.whatsapp.com/send?phone=6"+item.contact_no+"'>Whatsapp</a></button><br>"
+                            )
+                            .openPopup();
+                            clusterpoint.addLayer(marker);
+                        }
+                        else if (item.crime_category == "Assault" )
+                        {
+                            var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png'}) //marker icon
+
+                            var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
+                            .addTo(group5)
+                            .bindPopup
+                            (
+                            "<h4 class='mb-1'>" + item.report_title + "</h4> "
+                            +"<img class='img-same-size mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:orange;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.district+"</strong></h8></div>"
+                            +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
+                            +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6 class='p-2'>"+item.report_desc+"</h6></div>"
+                            +"<small>For enquiries, please contact :</small><br>"
+                            +"<strong><h10>"+item.fullname+" ("+item.email+")</h10></strong>&nbsp;&nbsp;&nbsp;<br>"
+                            +"<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green' href='tel:+6"+item.contact_no+"'>Call</a></button>\
+                            &nbsp;<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green'  href='https://api.whatsapp.com/send?phone=6"+item.contact_no+"'>Whatsapp</a></button><br>"
+                            )
+                            .openPopup();
+                            clusterpoint.addLayer(marker);
+                        }
+                        clusterpoint.addTo(mymap);
+
+                    })
+
+                ;}
+            });
+
+            var streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                                attribution: '',
+                                maxZoom: 18,
+                                id: 'mapbox/streets-v11', //mapbox/streets-v11 //mapbox/light-v10 //mapbox/dark-v10 //
+                                tileSize: 512,
+                                zoomOffset: -1,
+                                accessToken: '{{env('MAPBOX_PUBLIC_TOKEN')}}'
+                            }
+                ),
+                light = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                                attribution: '',
+                                maxZoom: 18,
+                                id: 'mapbox/light-v10', //mapbox/streets-v11 //mapbox/light-v10 //mapbox/dark-v10 //
+                                tileSize: 512,
+                                zoomOffset: -1,
+                                accessToken: '{{env('MAPBOX_PUBLIC_TOKEN')}}'
+                            }
+                ),
+                dark = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                                attribution: '',
+                                maxZoom: 18,
+                                id: 'mapbox/dark-v10', //mapbox/streets-v11 //mapbox/light-v10 //mapbox/dark-v10 //
+                                tileSize: 512,
+                                zoomOffset: -1,
+                                accessToken: '{{env('MAPBOX_PUBLIC_TOKEN')}}'
+                            }
+                ),
+                outdoor = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                                attribution: '',
+                                maxZoom: 18,
+                                id: 'mapbox/outdoors-v10', //mapbox/streets-v11 //mapbox/light-v10 //mapbox/dark-v10 //
+                                tileSize: 512,
+                                zoomOffset: -1,
+                                accessToken: '{{env('MAPBOX_PUBLIC_TOKEN')}}'
+                            }
+                ),
+                satellite = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                                attribution: '',
+                                maxZoom: 18,
+                                id: 'mapbox/satellite-v9', //mapbox/streets-v11 //mapbox/light-v10 //mapbox/dark-v10 //
+                                tileSize: 512,
+                                zoomOffset: -1,
+                                accessToken: '{{env('MAPBOX_PUBLIC_TOKEN')}}'
+                            }
+                );
+
+            var baseLayers = {
+                "Streets" : streets,
+                "Outdoors": outdoor,
+                "Light"   : light,
+                "Dark"    : dark,
+                "Satellite" : satellite,
+
+            };
+            var overlayMaps = {
+                "Theft": group1,
+                "Housebreak": group2,
+                "Robbery": group3,
+                "Motor Vehicle Theft": group4,
+                "Assault": group5,
+            }
+
+            var control = L.control.layers(baseLayers, overlayMaps).addTo(mymap);
+
+            group1.addTo(mymap);
+            group2.addTo(mymap);
+            group3.addTo(mymap);
+            group4.addTo(mymap);
+            group5.addTo(mymap);
+
             $.ajax({
                 type: "GET",
                 url: "show-chart",
@@ -185,10 +280,40 @@
                         pieHole: 0.3,
                         backgroundColor : '#f3f3f3',
                         colors:['orange','purple','#0dbc00','red','#4365ff'],
+                        tooltip: { trigger: 'selection' }
                         };
 
                         var chart = new google.visualization.PieChart(document.getElementById('crimecategory_chart'));
 
+                        chart.setAction({
+                            id:'showmarker',
+                            text: 'Show',
+                            action: function(){
+                                selection = chart.getSelection();
+                                switch (selection[0].row) {
+                                    case 0: mymap.addLayer(group5); mymap.removeLayer(group1); mymap.removeLayer(group2); mymap.removeLayer(group3); mymap.removeLayer(group4); break;
+                                    case 1: mymap.removeLayer(group5); mymap.removeLayer(group1); mymap.addLayer(group2); mymap.removeLayer(group3); mymap.removeLayer(group4); break;
+                                    case 2: mymap.removeLayer(group5); mymap.removeLayer(group1); mymap.removeLayer(group2); mymap.removeLayer(group3); mymap.addLayer(group4); break;
+                                    case 3: mymap.removeLayer(group5); mymap.removeLayer(group1); mymap.removeLayer(group2); mymap.addLayer(group3); mymap.removeLayer(group4); break;
+                                    case 4: mymap.removeLayer(group5); mymap.addLayer(group1); mymap.removeLayer(group2); mymap.removeLayer(group3); mymap.removeLayer(group4); break;
+                                }
+                            }
+                        });
+
+                        chart.setAction({
+                            id:'undomarker',
+                            text: 'Show All',
+                            action: function(){
+                                selection = chart.getSelection();
+                                switch (selection[0].row) {
+                                    case 0: mymap.addLayer(group5); mymap.addLayer(group1); mymap.addLayer(group2); mymap.addLayer(group3); mymap.addLayer(group4); break;
+                                    case 1: mymap.addLayer(group5); mymap.addLayer(group1); mymap.addLayer(group2); mymap.addLayer(group3); mymap.addLayer(group4); break;
+                                    case 2: mymap.addLayer(group5); mymap.addLayer(group1); mymap.addLayer(group2); mymap.addLayer(group3); mymap.addLayer(group4); break;
+                                    case 3: mymap.addLayer(group5); mymap.addLayer(group1); mymap.addLayer(group2); mymap.addLayer(group3); mymap.addLayer(group4); break;
+                                    case 4: mymap.addLayer(group5); mymap.addLayer(group1); mymap.addLayer(group2); mymap.addLayer(group3); mymap.addLayer(group4); break;
+                                }
+                            }
+                        });
                         chart.draw(data, options);
                     }
 
@@ -356,171 +481,91 @@
 
         }
 
-        function showallreport()
+
+</script>
+
+<script> //MAP COMPONENT
+
+    // Creating map view
+    var mymap = L.map('mapid').setView([5.3836, 102.0712], 9.45);
+
+    // Creating map options
+
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        attribution: '',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11', //mapbox/streets-v11 //mapbox/light-v10 //mapbox/dark-v10 //
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: '{{env('MAPBOX_PUBLIC_TOKEN')}}'
+    }).addTo(mymap);
+
+    @include('layouts.kelantanborder')
+    var geoStyle = {
+        "opacity": 1,
+        // "color": "blue",
+        "fillOpacity": 0.03 // value between 0-1 or 0% - 100%
+    };
+
+    L.geoJSON(mygeojson, {style: geoStyle}).addTo(mymap)
+    //L.control.locate().addTo(mymap);
+    var ctlsidebar = L.control.sidebar('sidebar').addTo(mymap);
+    // var ctleasybutton = L.easyButton('fa fa-gear', function () {
+    //     ctlsidebar.toggle();
+    // }).addTo(mymap);
+    var ctlviewchart = L.easyButton
+    (
         {
-            var group1 = new L.layerGroup(),
-                group2 = new L.layerGroup(),
-                group3 = new L.layerGroup(),
-                group4 = new L.layerGroup(),
-                group5 = new L.layerGroup();
-            $.ajax({
-                type: "GET",
-                url: "showall-report",
-                dataType: "json",
-                success: function (response)
+            states:
+            [
                 {
-                    var LeafIcon = L.Icon.extend({
-                        options: {
-                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                            //iconSize:     [38, 95],
-                            //shadowSize:   [50, 64],
-                            //iconAnchor:   [22, 94],
-                            //shadowAnchor: [4, 62],
-                            //popupAnchor:  [-3, -76]
-                        }
-                    });
-
-                    console.log(response.report);
-                    var clusterpoint = L.markerClusterGroup.layerSupport();
-
-                    $.each(response.report, function (key, item) {
-
-                        if (item.crime_category == "Theft" )
-                        {
-                            var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png'}) //marker icon
-
-                            var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
-                            .addTo(group1)
-                            .bindPopup
-                            (
-                            "<h4 class='mb-1'>" + item.report_title + "</h4> "
-                            +"<img class='mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
-                            +"<div class='rounded-pill  d-inline-block border bg-primary' style=''><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
-                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.district+"</strong></h8></div>"
-                            +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
-                            +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6>"+item.report_desc+"</h6></div>"
-                            +"<small>For enquiries, please contact :</small><br>"
-                            +"<strong><h10>"+item.fullname+" ("+item.email+")</h10></strong>&nbsp;&nbsp;&nbsp;<br>"
-                            +"<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green' href='tel:+6"+item.contact_no+"'>Call</a></button>\
-                            &nbsp;<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green'  href='https://api.whatsapp.com/send?phone=6"+item.contact_no+"'>Whatsapp</a></button><br>"
-                            )
-                            .openPopup();
-                            clusterpoint.addLayer(marker);
-                        }
-                        else if (item.crime_category == "Housebreak" )
-                        {
-                            var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png'}) //marker icon
-
-                            var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
-                            .addTo(group2)
-                            .bindPopup
-                            (
-                            "<h4 class='mb-1'>" + item.report_title + "</h4> "
-                            +"<img class='img-same-size mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
-                            +"<div class='rounded-pill  d-inline-block border' style='background-color:indigo;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
-                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.district+"</strong></h8></div>"
-                            +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
-                            +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6 class='p-2'>"+item.report_desc+"</h6></div>"
-                            +"<small>For enquiries, please contact :</small><br>"
-                            +"<strong><h10>"+item.fullname+" ("+item.email+")</h10></strong>&nbsp;&nbsp;&nbsp;<br>"
-                            +"<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green' href='tel:+6"+item.contact_no+"'>Call</a></button>\
-                            &nbsp;<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green'  href='https://api.whatsapp.com/send?phone=6"+item.contact_no+"'>Whatsapp</a></button><br>"
-                            )
-                            .openPopup();
-                            clusterpoint.addLayer(marker);
-                        }
-                        else if (item.crime_category == "Robbery" )
-                        {
-                            var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'}) //marker icon
-
-                            var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
-                            .addTo(group3)
-                            .bindPopup
-                            (
-                            "<h4 class='mb-1'>" + item.report_title + "</h4> "
-                            +"<img class='mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
-                            +"<div class='rounded-pill  d-inline-block bg-danger border'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
-                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.district+"</strong></h8></div>"
-                            +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
-                            +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6 class='p-2'>"+item.report_desc+"</h6></div>"
-                            +"<small>For enquiries, please contact :</small><br>"
-                            +"<strong><h10>"+item.fullname+" ("+item.email+")</h10></strong>&nbsp;&nbsp;&nbsp;<br>"
-                            +"<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green' href='tel:+6"+item.contact_no+"'>Call</a></button>\
-                            &nbsp;<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green'  href='https://api.whatsapp.com/send?phone=6"+item.contact_no+"'>Whatsapp</a></button><br>"
-                            )
-                            .openPopup();
-                            clusterpoint.addLayer(marker);
-                        }
-                        else if (item.crime_category == "Motor vehicle theft" )
-                        {
-                            var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png'}) //marker icon
-
-                            var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
-                            .addTo(group4)
-                            .bindPopup
-                            (
-                            "<h4 class='mb-1'>" + item.report_title + "</h4> "
-                            +"<img class='img-same-size mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
-                            +"<div class='rounded-pill  d-inline-block bg-success border'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
-                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.district+"</strong></h8></div>"
-                            +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
-                            +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6 class='p-2'>"+item.report_desc+"</h6></div>"
-                            +"<small>For enquiries, please contact :</small><br>"
-                            +"<strong><h10>"+item.fullname+" ("+item.email+")</h10></strong>&nbsp;&nbsp;&nbsp;<br>"
-                            +"<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green' href='tel:+6"+item.contact_no+"'>Call</a></button>\
-                            &nbsp;<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green'  href='https://api.whatsapp.com/send?phone=6"+item.contact_no+"'>Whatsapp</a></button><br>"
-                            )
-                            .openPopup();
-                            clusterpoint.addLayer(marker);
-                        }
-                        else if (item.crime_category == "Assault" )
-                        {
-                            var Icon = new LeafIcon({iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png'}) //marker icon
-
-                            var marker = L.marker([item.latitude,item.longitude], {icon: Icon})
-                            .addTo(group5)
-                            .bindPopup
-                            (
-                            "<h4 class='mb-1'>" + item.report_title + "</h4> "
-                            +"<img class='img-same-size mb-2' id ='reportmedia' src='uploads/report/"+item.report_media+"'/>"
-                            +"<div class='rounded-pill  d-inline-block border' style='background-color:orange;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.crime_category+"</strong></h8></div>"
-                            +"<div class='rounded-pill  d-inline-block border' style='background-color:black;'><h8 class='mt-2 mx-2 text-center' style='color: white;'><strong>"+item.district+"</strong></h8></div>"
-                            +"<div class='rounded-pill  d-inline-block border mb-2 alig'><h8 class='mt-2 mx-2 text-center' style='color: ;'><strong>"+parseFloat(item.latitude).toFixed(5)+","+parseFloat(item.longitude).toFixed(5)+"</strong></h8></div>"
-                            +"<div class='' style='background-color: #f1f3f5; border-radius: 0rem 1rem;'><h6 class='p-2'>"+item.report_desc+"</h6></div>"
-                            +"<small>For enquiries, please contact :</small><br>"
-                            +"<strong><h10>"+item.fullname+" ("+item.email+")</h10></strong>&nbsp;&nbsp;&nbsp;<br>"
-                            +"<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green' href='tel:+6"+item.contact_no+"'>Call</a></button>\
-                            &nbsp;<button type='button' class='btn btn-outline-success btn-sm' style='border-radius:0.8rem'><a style='color:green'  href='https://api.whatsapp.com/send?phone=6"+item.contact_no+"'>Whatsapp</a></button><br>"
-                            )
-                            .openPopup();
-                            clusterpoint.addLayer(marker);
-                        }
-                        clusterpoint.addTo(mymap);
-
-                    })
-
-
-
-                ;}
-            });
-
-
-                    var overlayMaps = {
-                        "Theft": group1,
-                        "Housebreak": group2,
-                        "Robbery": group3,
-                        "Motor Vehicle Theft": group4,
-                        "Assault": group5,
+                    stateName: 'zoom-to-forest',        // name the state
+                    icon:      'fa fa-gear',               // and define its properties
+                    title:     'View Charts',      // like its title
+                    onClick: function(btn, map)
+                    {       // and its callback
+                        ctlsidebar.toggle();
+                        btn.state('zoom-to-school');    // change state on click!
                     }
-
-                    var control = L.control.layers(null, overlayMaps).addTo(mymap);
-
-                    group1.addTo(mymap);
-                    group2.addTo(mymap);
-                    group3.addTo(mymap);
-                    group4.addTo(mymap);
-                    group5.addTo(mymap);
+                },
+            ]
         }
+    ).addTo(mymap);
+
+    var ctlcentermap = L.easyButton
+    (
+        {
+            states:
+            [
+                {           //STATE 1
+                    stateName: 'zoom-to-forest',        // name the state
+                    icon:      'fa fa-arrows',               // and define its properties
+                    title:     'Pan out to Kelantan',      // like its title
+                    onClick: function(btn, map)
+                    {       // and its callback
+                        map.setView([5.4274, 102.0407],9.45);
+                        btn.state('zoom-to-school');    // change state on click!
+                    }
+                },
+
+                // {        //STATE 2
+                //     stateName: 'zoom-to-school',
+                //     icon:      'fa-university',
+                //     title:     'zoom to a school',
+                //     onClick: function(btn, map)
+                //     {
+                //         map.setView(mymap.getCenter(),16);
+                //         btn.state('zoom-to-forest');
+                //     }
+                // }
+            ]
+        }
+    ).addTo(mymap);
+
+
+    $(document).ready(function () {
+
+        showallreport();
 
         $(document).on('click', '.add_report', function (e) {
             e.preventDefault();
@@ -583,7 +628,6 @@
                         $("#addreportform").trigger("reset");
                         alert(response.message);
                         showallreport();
-                        showchart();
                     }
                 }
             });
@@ -592,6 +636,6 @@
     });
 </script>
 
-@include('report.add_script')
+@include('report.addmodal_script')
 @endsection
-{{-- Scripts End --}}
+{{-- Scripts section -- End --}}
