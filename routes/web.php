@@ -19,6 +19,7 @@ use App\Http\Controllers\ReportController;
 // Route::get('/', [ReportController::class, 'index']);
 Route::get('showall-report',[ReportController::class, 'showallreport']);
 Route::get('show-chart',[ReportController::class, 'showchart']);
+Route::delete('/marker/{id}',[ReportController::class, 'destroy'])->name('marker.delete');
 
 Route::post('/', [ReportController::class, 'store']);
 Route::get('all-post', [ReportController::class, 'getAllPost'])->name('post.all');

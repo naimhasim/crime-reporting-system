@@ -45,21 +45,14 @@
     <script src="{{asset('js/easy-button.js')}}"></script>
     <script src="{{asset('js/leaflet-sidebar.js')}}"></script>
     <script src="{{asset('js/L.Control.Sidebar.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 
 <body>
-
-
-
     <!--Content-->
-    <div>
-        @yield('content')
-    </div>
-
-
-    <!--Footer-->
-    <footer></footer>
-
+    @yield('content')
+    <!--Content-End-->
 
     @yield('scripts')
 </body>

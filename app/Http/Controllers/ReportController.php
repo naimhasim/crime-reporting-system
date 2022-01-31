@@ -40,15 +40,16 @@ class ReportController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'fullname'=>'required|max:255',
-            'phoneno'=>'required|digits:10',
-            'email' => 'email:rfc,dns',
-            'report_title'=>'required|max:255',
-            'report_desc'=>'required|max:255',
-            'report_media'=>'image|mimes:jpeg,png,jpg|max:2048',
-            'crime_category'=>'required',
-            'latitude'=>'required',
-            'longitude'=>'required',
+            'fullname'      => 'required|max:255',
+            'phoneno'       => 'required|digits:11',
+            'email'         => 'email:rfc,dns',
+            'report_title'  => 'required|max:255',
+            'report_desc'   => 'required|max:255',
+            'report_media'  => 'image|mimes:jpeg,png,jpg|max:2048',
+            'crime_category'=> 'required|in:Housebreak,Robbery,Theft,Motor vehicle theft,Assault',
+            'crimedate'     => 'required',
+            'latitude'      => 'required',
+            'longitude'     => 'required',
         ]);
 
         if($validator->fails())
@@ -78,7 +79,8 @@ class ReportController extends Controller
             $extracteddata = Http::get("https://api.mapbox.com/geocoding/v5/mapbox.places/".$long.",".$lat.".json?types=place&limit=1&access_token=pk.eyJ1IjoibmFpbWhhc2ltIiwiYSI6ImNrdmFxaGYzbTJsOGgydnA2OWVhZHoxOWIifQ.HpzTWE563N64yu0JYi251w");
             $assocArray = json_decode($extracteddata);
             $location = $assocArray->features[0]->text;
-            $report->location = $location;
+            $report->district = $location;
+            $report->crime_date = $request->input('crimedate');
             $report->user_id = $users->id; // get last inserted id
             if($request->hasFile('report_media'))
             {
@@ -102,7 +104,7 @@ class ReportController extends Controller
     public function showchart(){
         $crimecategorychart = DB::select(DB::raw("SELECT report.crime_category, count(report.report_title) as total FROM report GROUP BY report.crime_category;"));
         $districtchart = DB::select(DB::raw("SELECT count(report.report_title) AS total, report.district FROM report GROUP BY report.district;"));
-        $totalperdate = DB::select(DB::raw("SELECT count(report_title) as 'jumlah', created_at as 'date' FROM `report` group BY created_at ASC;"));
+        $totalperdate = DB::select(DB::raw("SELECT count(report_title) as 'jumlah', crime_date as 'date' FROM `report` group BY crime_date ASC;"));
 
         return response()->json([
             'categorychart' => $crimecategorychart,
@@ -115,7 +117,8 @@ class ReportController extends Controller
     {
         //$report = Report::all();
         //$users  = Users::all();
-        $report = DB::table('report')->select('*')->join('users', 'report.user_id', '=', 'users.id')->get();
+        // $report = DB::table('report')->select('*')->join('users', 'report.user_id', '=', 'users.id')->get();
+        $report = DB::table('users')->select('*')->join('report', 'report.user_id', '=', 'users.id')->get();
         //$report = DB::select('select * from report, users where report.id = users.id');
         //$report = DB::table('users')->join('report','users.id', '=', 'report.id')->get();
 
@@ -179,6 +182,15 @@ class ReportController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // $report = Report::find($id);
+        $report = DB::table('users')
+                    ->select('*')
+                    ->join('report', "users.id", "=", 'report.user_id')
+                    ->where("report.id", "=", $id)
+                    ->delete();
+        //$report->delete();
+        return response()->json([
+            'message' => 'Data deleted successfully!'
+        ]);
     }
 }

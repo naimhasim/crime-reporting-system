@@ -1,6 +1,5 @@
 <div id="sidebar" style="">
     <h3><center>Dashboard</center></h3>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <div class="card mb-3" style="width:;">
         <div id="crimecategory_chart" style="width: ; height: ;"></div>
         <div class="card-body">

@@ -1,4 +1,4 @@
-  <!-- Modal -->
+  <!--AddReportModal -->
 <div class="modal fade" id="AddReportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <form action="" method="POST" id="addreportform" enctype="multipart/form-data">
     <div class="modal-dialog">
@@ -10,7 +10,7 @@
             </div>
 
             <div class="modal-body"> {{-- modal body --}}
-                <ul id="saveform_errList"></ul>
+                <ul id="reportform_errList"></ul>
 
                 <div class="px-1 mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Your Name</label>
@@ -19,6 +19,10 @@
                 <div class="px-1 mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Phone Number</label>
                     <input type="text" class="form-control phoneno" placeholder="Enter Title">
+                </div>
+                <div class="px-1 mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                    <input type="email" class="form-control email" placeholder="name@example.com">
                 </div>
                 <div class="px-1 mb-3">
                     <label for="exampleFormControlInput1" class="form-label">Report title</label>
@@ -43,12 +47,12 @@
                     </select>
                 </div>
                 <div class="px-1 mb-3">
-                    <label for="formFile" class="form-label">Do you have photo? (optional)</label>
+                    <label for="formFile" class="form-label">Upload photo</label>
                     <input class="form-control report_media" type="file" id="inputGroupFile02">
                 </div>
                 <div class="px-1 mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Email address (optional)</label>
-                    <input type="email" class="form-control email" placeholder="name@example.com">
+                    <label for="formFile" class="form-label">Date & Time occured</label>
+                    <input class="form-control crimedate" type="date">
                 </div>
 
                 <label for="exampleFormControlInput1" class="form-label">Location</label>
@@ -64,7 +68,7 @@
                     <span class="input-group-text" id="basic-addon1">Longitude</span>
                     <input id="longitude" type="text" class="form-control longitude" placeholder="in map" aria-label="Username" aria-describedby="basic-addon1">
                 </div>
-            </div>
+            </div> {{--modal body--}}
 
             <div class="modal-footer"> {{-- modal footer --}}
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

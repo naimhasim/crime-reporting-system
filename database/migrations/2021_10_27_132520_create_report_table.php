@@ -25,6 +25,7 @@ class CreateReportTable extends Migration
             $table->string('longitude');
             $table->string('district')->nullable();
             $table->timestamps();
+            //add column 'crime_date' as timestamps datatype
         });
 
         // Schema::create('report', function (Blueprint $table) {
