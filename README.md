@@ -13,6 +13,7 @@ The system allows users to lodge police report without having to go to the polic
 -   [Laravel](https://laravel.com/)
 -   [Leaflet](http://leafletjs.com/)
 -   [Google Charts](https://developers.google.com/chart)
+-   [Markercluster](https://github.com/Leaflet/Leaflet.markercluster)    
 
 <br>
 
