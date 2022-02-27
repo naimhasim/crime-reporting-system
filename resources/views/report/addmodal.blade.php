@@ -51,7 +51,7 @@
                     <input class="form-control report_media" type="file" id="inputGroupFile02">
                 </div>
                 <div class="px-1 mb-3">
-                    <label for="formFile" class="form-label">Date & Time occured</label>
+                    <label for="formFile" class="form-label">Date occured</label>
                     <input class="form-control crimedate" type="date">
                 </div>
 

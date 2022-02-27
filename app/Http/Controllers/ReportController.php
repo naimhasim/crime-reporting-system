@@ -41,7 +41,7 @@ class ReportController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'fullname'      => 'required|max:255',
-            'phoneno'       => 'required|digits:11',
+            'phoneno'       => 'required',
             'email'         => 'email:rfc,dns',
             'report_title'  => 'required|max:255',
             'report_desc'   => 'required|max:255',

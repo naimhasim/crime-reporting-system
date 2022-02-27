@@ -657,7 +657,7 @@ function showallreport()
 
             $.ajax(
                 {
-                url: "marker/"+id, //or you can use url: url.href,
+                url: "marker/"+id, //or can use url: url.href,
                 type: 'DELETE',
                 data: {
                     _token: token,
