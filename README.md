@@ -1,4 +1,4 @@
-# **Crime Reporting System**
+# **Crime Reporting System ([Demo](https://crimereporting-app.herokuapp.com/))**
 
 <image src="images/home.png" width="">
 
@@ -23,31 +23,6 @@ The system allows users to lodge police report without having to go to the polic
 <image src="images/mapmarker.png" width="300">
 <image src="images/ui.png" width="300">
 </p>
-
----
-
-## **How To Use**
-
-<br>
-Clone this repository and do the following-
-
-<br>
-
-#### 1. Import [crime.sql](crime.sql) into your database.
-
-<br>
-
-#### 2. Package Installation
-
-```
-npm install
-```
-
-#### 3. Run application
-
-```html
-php artisan serve
-```
 
 ---
 
