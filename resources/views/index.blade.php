@@ -6,7 +6,7 @@
 
 
     <!--content----->
-    <div class="span9" style="height:100%">
+    <div class="span9">
         <div id="map-wrapper" >
             @include('report.sidebar')
             <div id="mapid"></div> <!--leaflet map div -->
@@ -15,6 +15,11 @@
                     <b style="font-size: large; color: white;">Add report<b>
                 </button>
             </div>
+        </div>
+        <div id="github-wrapper" style="background-color: #6e5494">
+            <div class="" style="display:flex; justify-content: center;  align-items: center; color:white;background-color: ;font-size: 15px; padding-bottom:5px">
+                <span style="margin-right: 6px;">Powered by</span>
+                <a style="color:white" href="https://github.com/naimhasim/crime-reporting-system#readme">Naim Hasim</a></div>
         </div>
     </div>
 
