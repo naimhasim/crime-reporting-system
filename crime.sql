@@ -1,46 +1,23 @@
--- phpMyAdmin SQL Dump
--- version 5.1.1
--- https://www.phpmyadmin.net/
---
--- Host: localhost
--- Generation Time: Jan 31, 2022 at 08:23 PM
--- Server version: 10.4.21-MariaDB
--- PHP Version: 8.1.2
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `crime`
---
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `report`
 --
 
 CREATE TABLE `report` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `report_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `report_desc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `report_media` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `crime_category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `latitude` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `longitude` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `district` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `crime_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `report_title` varchar(255) DEFAULT NULL,
+  `report_desc` varchar(255) DEFAULT NULL,
+  `report_media` blob,
+  `crime_category` varchar(255) DEFAULT NULL,
+  `latitude` varchar(255) DEFAULT NULL,
+  `longitude` varchar(255) DEFAULT NULL,
+  `district` varchar(255) DEFAULT NULL,
+  `crime_date` datetime DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `report`
@@ -73,37 +50,45 @@ INSERT INTO `report` (`id`, `user_id`, `report_title`, `report_desc`, `report_me
 (25, 24, 'Robbery in bank', 'Men with hats and armed with pistols are robbing a bank', '1639738968.jpeg', 'Robbery', '5.609152', '101.881456', 'Kuala Balah', '2022-01-23 16:00:00', '2022-01-31 12:39:58', '2022-01-31 12:39:58');
 
 --
--- Indexes for dumped tables
+-- Table structure for table `users`
 --
 
---
--- Indexes for table `report`
---
-ALTER TABLE `report`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `report_user_id_foreign` (`user_id`);
+CREATE TABLE `users` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `fullname` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `contact_no` varchar(255) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- AUTO_INCREMENT for dumped tables
+-- Dumping data for table `users`
 --
 
---
--- AUTO_INCREMENT for table `report`
---
-ALTER TABLE `report`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `report`
---
-ALTER TABLE `report`
-  ADD CONSTRAINT `report_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+insert into `users` (`contact_no`, `created_at`, `email`, `fullname`, `id`, `updated_at`)
+values  ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 1, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 2, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 3, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 4, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 5, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 6, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 7, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 8, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 9, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 10, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 11, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 12, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 13, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 14, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 15, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 16, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 17, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 18, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 19, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 20, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 21, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 22, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 23, '2023-03-23 17:00:10'),
+        ('0123922239', '2023-03-23 17:00:10', 'sdas@gmail.com', '123', 24, '2023-03-23 17:00:10');

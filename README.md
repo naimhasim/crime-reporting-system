@@ -25,6 +25,17 @@ The system allows users to lodge police report without having to go to the polic
 </p>
 
 ---
+## Installation
+1. `composer install`
+2. create `.env` file and copy `.env.example` content
+3. `php artisan key:generate`
+4. Grab your [mapbox API](https://account.mapbox.com/) here and assign to `MAPBOX_PUBLIC_TOKEN` environment variable
+
+EXTRA !!
+
+- Dump data from [crime.sql](https://github.com/naimhasim/crime-reporting-system/blob/main/crime.sql) to your database for testing purpose
+
+---
 
 ## Credits
 

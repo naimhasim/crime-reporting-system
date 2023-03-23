@@ -208,15 +208,16 @@ function showallreport()
                     google.charts.setOnLoadCallback(drawChart);
                     function drawChart() {
 
-                        var data = google.visualization.arrayToDataTable([
-                            ['Crime Category', 'Number of reports '],
-                            [response.categorychart[0].crime_category,response.categorychart[0].total],
-                            [response.categorychart[1].crime_category,response.categorychart[1].total],
-                            [response.categorychart[2].crime_category,response.categorychart[2].total],
-                            [response.categorychart[3].crime_category,response.categorychart[3].total],
-                            [response.categorychart[4].crime_category,response.categorychart[4].total],
+                        // Map the response category chart data to an array of data rows
+                        var dataRows = response.categorychart.map(function(item) {
+                            return [item.crime_category, item.total];
+                        });
 
-                        ]);
+                        // Add the column headers to the beginning of the data array
+                        dataRows.unshift(['Crime Category', 'Number of reports']);
+
+                        // Convert the data array to a DataTable object
+                        var data = google.visualization.arrayToDataTable(dataRows);
 
                         var options = {
                         // title: 'Crime Category Chart',

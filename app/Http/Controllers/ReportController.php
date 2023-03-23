@@ -104,7 +104,7 @@ class ReportController extends Controller
     public function showchart(){
         $crimecategorychart = DB::select(DB::raw("SELECT report.crime_category, count(report.report_title) as total FROM report GROUP BY report.crime_category;"));
         $districtchart = DB::select(DB::raw("SELECT count(report.report_title) AS total, report.district FROM report GROUP BY report.district;"));
-        $totalperdate = DB::select(DB::raw("SELECT count(report_title) as 'jumlah', crime_date as 'date' FROM `report` group BY crime_date ASC;"));
+        $totalperdate = DB::select(DB::raw("SELECT count(report_title) as 'jumlah', crime_date as 'date' FROM `report` group BY crime_date ORDER BY crime_date ASC;"));
 
         return response()->json([
             'categorychart' => $crimecategorychart,
